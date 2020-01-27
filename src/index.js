@@ -30,14 +30,14 @@ const app = () => {
 };
 
 const memoComp = memo(comp => {
-  return memo((props, a) => {
-    return root(() => comp(props, a));
+  return memo((props, children) => {
+    return root(() => comp(props, children));
   });
 });
 
 const dynamic = comp => {
-  return (props, a) => {
-    return () => memoComp(comp())(props, a);
+  return (props, ...children) => {
+    return () => memoComp(comp())(props, children);
   };
 };
 
@@ -51,35 +51,25 @@ function switchComponent() {
 
 const component1 = ({ items }, ...children) => {
   console.log("comp1", children);
-  const result = html`
+  return html`
     list
     <ul>
-      ${map(
-        items,
-        item =>
-          html`
-            <li id=${item}>${item}</li>
-          `
-      )}
+      ${map(items, item => html`
+        <li id=${item}>${item}</li>
+      `)}
     </ul>
     ${children}
   `;
-  console.log(Array.from(result.children));
-  return result;
 };
 
 const component2 = ({ items }, ...children) => {
-  console.log("comp2");
+  console.log("comp2", children);
   return html`
     list ** 2
     <ul>
-      ${map(
-        items,
-        item =>
-          html`
-            <li id=${item}>${item ** 2}</li>
-          `
-      )}
+      ${map(items, item => html`
+      	<li id=${item}>${item ** 2}</li>
+			`)}
     </ul>
     ${children}
   `;
